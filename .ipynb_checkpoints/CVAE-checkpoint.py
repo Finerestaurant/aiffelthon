@@ -32,6 +32,11 @@ class Decoder(nn.Module):
         return z
 
     
+def reparameterize(rng, mean, logvar):
+    std = jnp.exp(0.5 * logvar)
+    eps = jax.random.normal(rng, logvar.shape)
+    return mean + eps * std    
+    
 class CVAE(nn.Module):
     latents: int = 20
     recon_shape: int = 48 * 1876
@@ -53,7 +58,3 @@ class CVAE(nn.Module):
         return nn.sigmoid(self.decoder(z))
 
 
-    def reparameterize(rng, mean, logvar):
-        std = jnp.exp(0.5 * logvar)
-        eps = jax.random.normal(rng, logvar.shape)
-        return mean + eps * std
