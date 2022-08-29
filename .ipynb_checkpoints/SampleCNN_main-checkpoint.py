@@ -60,7 +60,7 @@ def train_step(state,
 
 if __name__ == "__main__":
     batch_size = 128
-    lr = 0.0001
+    lr = 0.001
     
     # ---Load dataset---
     print("Loading dataset...")

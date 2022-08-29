@@ -46,18 +46,22 @@ class mel_dataset(Dataset):
                         except:
                             print(song_id,'passed.')
                             
-        self.file_list = [key for key in result_dict.keys()]
+        file_list = []
         label = []
 
-        for genres in result_dict.values():
-            one_hot_zero = np.zeros(len(self.genre_index))
+        for song_id, genres in result_dict.items():
             
-            for value in genres:
-                one_hot_zero[self.genre_index[value]] = 1
-                break
-            label.append(one_hot_zero)
+            if len(genres) == 1:
+                one_hot_zero = np.zeros(len(self.genre_index))                        
+                for value in genres:                    
+                    one_hot_zero[self.genre_index[value]] = 1
+                file_list.append(song_id)
+                label.append(one_hot_zero)
+            else:
+                pass
 
-        
+
+        self.file_list = file_list
         self.label = label
         
     def __getitem__(self, index):
