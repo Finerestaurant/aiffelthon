@@ -10,8 +10,9 @@ class mel_dataset(Dataset):
     def __init__(self, data_dir):
         
         super(mel_dataset, self).__init__()
-        if os.path.isfile(f'{data_dir}/song_meta.json'):
-            with open(f'{data_dir}/song_meta.json') as f:
+        meta_file_path = os.path.join(data_dir, "song_meta.json")
+        if os.path.isfile(meta_file_path):
+            with open(meta_file_path) as f:
                 song_meta = json.load(f)
         else:
             raise FileNotFoundError(f'No such file or directory: {data_dir}/song_meta.json')

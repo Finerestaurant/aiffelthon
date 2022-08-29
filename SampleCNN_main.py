@@ -64,7 +64,8 @@ if __name__ == "__main__":
     
     # ---Load dataset---
     print("Loading dataset...")
-    data = mel_dataset('~/dataset')
+    dataset_dir = '/home/anthonypark6904/dataset'
+    data = mel_dataset(dataset_dir)
     train_dataloader = DataLoader(data, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_batch)
     print(f'batch_size = {batch_size}')
     print(f'learning rate = {lr}')
