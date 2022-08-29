@@ -54,7 +54,7 @@ class mel_dataset(Dataset):
             
             for value in genres:
                 one_hot_zero[self.genre_index[value]] = 1
-                
+                break
             label.append(one_hot_zero)
 
         
