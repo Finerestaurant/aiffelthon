@@ -77,7 +77,7 @@ if __name__ == "__main__":
     print("Initializing model....")
     state = init_state(model, next(iter(train_dataloader))[0].shape, jax.random.PRNGKey(353), lr)
     print("Initialize complete!!\n")
-    
+    rng = jax.random.PRNGKey(353)
     # ---train model---
     epoch = 50
     # checkpoint_dir = str(input('checkpoint dir : '))
@@ -90,9 +90,9 @@ if __name__ == "__main__":
         print(f'\nEpoch {i+1}')
         
         for j in range(len(train_dataloader)):
-
+            rng, key = jax.random.split(rng)
             x, y = next(train_data)
-            state, loss, accuracy = train_step(state, x, y, dropout_rng=jax.random.PRNGKey(402))
+            state, loss, accuracy = train_step(state, x, y, dropout_rng=rng)
             loss_list.append(loss)
             loss_mean += loss
             accuarcy_mean += accuracy
