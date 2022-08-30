@@ -1,6 +1,6 @@
 from dataloader import mel_dataset
 from torch.utils.data import DataLoader
-from CVAE import CVAE
+from model import CVAE
 
 import flax 
 import flax.linen as nn
@@ -11,6 +11,7 @@ import numpy as np
 import jax.numpy as jnp
 import optax
 from tqdm import tqdm
+import os
 
 # print(jax.local_devices())
 
@@ -62,12 +63,12 @@ def train_step(state, x, y, z_rng):
 
 if __name__ == "__main__":
     batch_size = 128
-    lr = 0.00001
+    lr = 0.0001
     rng = jax.random.PRNGKey(303)
     
     # ---Load dataset---
     print("Loading dataset...")
-    dataset_dir = '/home/anthonypark6904/dataset'
+    dataset_dir = os.path.join(os.path.expanduser('~'),'dataset')
     data = mel_dataset(dataset_dir)
     print(f'Loaded data : {len(data)}')
     train_dataloader = DataLoader(data, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_batch)
@@ -99,7 +100,7 @@ if __name__ == "__main__":
         for j in range(len(train_dataloader)):
             rng, key = jax.random.split(rng)
             x, y = next(train_data)
-            x = (x / 100) + 1
+            x = (x / 100) + 1 # normalization : min = 0, max = 2
             state, loss = train_step(state, x, y, rng)
             
             loss_mean += loss
