@@ -1,0 +1,22 @@
+{
+    "os": "Linux-5.13.0-1027-gcp-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2022-08-30T03:58:16.163628",
+    "startedAt": "2022-08-30T03:58:15.812275",
+    "docker": null,
+    "cpu_count": 96,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "CVAE_main.py",
+    "codePath": "CVAE_main.py",
+    "git": {
+        "remote": "https://github.com/Finerestaurant/aiffelthon.git",
+        "commit": "e9049b9ece0ebff169cfc6816b0a1d6e41609913"
+    },
+    "email": "anthonypark6904@gmail.com",
+    "root": "/home/anthonypark6904/module",
+    "host": "t1v-n-bc8ae56a-w-0",
+    "username": "anthonypark6904",
+    "executable": "/usr/bin/python3"
+}

@@ -1,0 +1,41 @@
+
+Loading dataset...
+Loaded data : 62235
+batch_size = 128
+learning rate = 0.0001
+train_size = 49788
+test_size = 12447
+Data load complete!
+Initializing model....
+Initialize complete!!
+Epoch 1
+Traceback (most recent call last):
+  File "CVAE_main.py", line 152, in <module>
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/_api/deprecation.py", line 459, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/pyplot.py", line 2650, in imshow
+    __ret = gca().imshow(
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/_api/deprecation.py", line 459, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/__init__.py", line 1414, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/axes/_axes.py", line 5487, in imshow
+    im.set_data(X)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/image.py", line 715, in set_data
+    raise TypeError("Invalid shape {} for image data"
+TypeError: Invalid shape (32, 48, 1876) for image data
+Traceback (most recent call last):
+  File "CVAE_main.py", line 152, in <module>
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/_api/deprecation.py", line 459, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/pyplot.py", line 2650, in imshow
+    __ret = gca().imshow(
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/_api/deprecation.py", line 459, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/__init__.py", line 1414, in inner
+    return func(ax, *map(sanitize_sequence, args), **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/axes/_axes.py", line 5487, in imshow
+    im.set_data(X)
+  File "/usr/local/lib/python3.8/dist-packages/matplotlib/image.py", line 715, in set_data
+    raise TypeError("Invalid shape {} for image data"
+TypeError: Invalid shape (32, 48, 1876) for image data

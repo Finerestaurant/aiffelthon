@@ -1,0 +1,265 @@
+
+Loading dataset...
+Loaded data : 62235
+batch_size = 128
+learning rate = 0.0001
+train_size = 49788
+test_size = 12447
+Data load complete!
+Initializing model....
+Initialize complete!!
+Epoch 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 1 - average loss - train : 48081.1796875, test : 48017.9414062575
+Epoch 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 2 - average loss - train : 44054.171875, test : 44048.11718756875
+Epoch 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 3 - average loss - train : 43733.390625, test : 43737.28906253125
+Epoch 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 4 - average loss - train : 43618.42578125, test : 43627.375551255
+Epoch 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 5 - average loss - train : 43421.296875, test : 43422.62109375375
+Epoch 6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 6 - average loss - train : nan, test : nannnloss : 42110.61718755
+Epoch 7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 7 - average loss - train : nan, test : nann
+Epoch 8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+step : 283/389, train_loss : nan, test_loss : nan
+Traceback (most recent call last):
+  File "CVAE_main.py", line 136, in <module>
+    x, y = next(train_data)
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/dataloader.py", line 521, in __next__
+    data = self._next_data()
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/dataloader.py", line 561, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/dataset.py", line 311, in __getitem__
+    return self.dataset[self.indices[idx]]
+  File "/home/anthonypark6904/module/dataloader.py", line 69, in __getitem__
+    self.x = np.load(self.file_list[index])
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/npyio.py", line 430, in load
+    return format.read_array(fid, allow_pickle=allow_pickle,
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 732, in read_array
+    shape, fortran_order, dtype = _read_array_header(fp, version)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 595, in _read_array_header
+    header = _filter_header(header)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 556, in _filter_header
+    for token in tokenize.generate_tokens(StringIO(s).readline):
+  File "/usr/lib/python3.8/tokenize.py", line 525, in _tokenize
+    pseudomatch = _compile(PseudoToken).match(line, pos)
+  File "/usr/lib/python3.8/tokenize.py", line 99, in _compile
+    return re.compile(expr, re.UNICODE)
+  File "/usr/lib/python3.8/re.py", line 252, in compile
+    return _compile(pattern, flags)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "CVAE_main.py", line 136, in <module>
+    x, y = next(train_data)
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/dataloader.py", line 521, in __next__
+    data = self._next_data()
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/dataloader.py", line 561, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/_utils/fetch.py", line 44, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/_utils/fetch.py", line 44, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/usr/local/lib/python3.8/dist-packages/torch/utils/data/dataset.py", line 311, in __getitem__
+    return self.dataset[self.indices[idx]]
+  File "/home/anthonypark6904/module/dataloader.py", line 69, in __getitem__
+    self.x = np.load(self.file_list[index])
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/npyio.py", line 430, in load
+    return format.read_array(fid, allow_pickle=allow_pickle,
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 732, in read_array
+    shape, fortran_order, dtype = _read_array_header(fp, version)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 595, in _read_array_header
+    header = _filter_header(header)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 556, in _filter_header
+    for token in tokenize.generate_tokens(StringIO(s).readline):
+  File "/usr/lib/python3.8/tokenize.py", line 525, in _tokenize
+    pseudomatch = _compile(PseudoToken).match(line, pos)
+  File "/usr/lib/python3.8/tokenize.py", line 99, in _compile
+    return re.compile(expr, re.UNICODE)
+  File "/usr/lib/python3.8/re.py", line 252, in compile
+    return _compile(pattern, flags)
+KeyboardInterrupt

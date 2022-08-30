@@ -1,0 +1,109 @@
+
+Loading dataset...
+Loaded data : 62235
+batch_size = 128
+learning rate = 0.0001
+train_size = 49788
+test_size = 12447
+Data load complete!
+Initializing model....
+Traceback (most recent call last):
+  File "CVAE_main.py", line 114, in <module>
+    state = init_state(model,
+  File "CVAE_main.py", line 34, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), jnp.ones(y_shape), key)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1273, in init
+    _, v_out = self.init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1229, in init_with_output
+    return init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 897, in wrapper
+    return apply(fn, mutable=mutable, flags=init_flags)({}, *args, rngs=rngs,
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1647, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model.py", line 148, in __call__
+    mean, logvar = self.encoder(x)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model.py", line 105, in __call__
+    x = nn.Dense(500, name='fc1')(x)
+  File "<string>", line 12, in __init__
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 774, in __post_init__
+    raise errors.NameInUseError('submodule', self.name, parent_class)
+jax._src.traceback_util.UnfilteredStackTrace: flax.errors.NameInUseError: Could not create submodule "fc1" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "CVAE_main.py", line 114, in <module>
+    state = init_state(model,
+  File "CVAE_main.py", line 34, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), jnp.ones(y_shape), key)
+  File "/home/anthonypark6904/module/model.py", line 148, in __call__
+    mean, logvar = self.encoder(x)
+  File "/home/anthonypark6904/module/model.py", line 105, in __call__
+    x = nn.Dense(500, name='fc1')(x)
+  File "<string>", line 12, in __init__
+flax.errors.NameInUseError: Could not create submodule "fc1" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)
+Traceback (most recent call last):
+  File "CVAE_main.py", line 114, in <module>
+    state = init_state(model,
+  File "CVAE_main.py", line 34, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), jnp.ones(y_shape), key)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1273, in init
+    _, v_out = self.init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1229, in init_with_output
+    return init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 897, in wrapper
+    return apply(fn, mutable=mutable, flags=init_flags)({}, *args, rngs=rngs,
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1647, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model.py", line 148, in __call__
+    mean, logvar = self.encoder(x)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model.py", line 105, in __call__
+    x = nn.Dense(500, name='fc1')(x)
+  File "<string>", line 12, in __init__
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 774, in __post_init__
+    raise errors.NameInUseError('submodule', self.name, parent_class)
+jax._src.traceback_util.UnfilteredStackTrace: flax.errors.NameInUseError: Could not create submodule "fc1" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "CVAE_main.py", line 114, in <module>
+    state = init_state(model,
+  File "CVAE_main.py", line 34, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), jnp.ones(y_shape), key)
+  File "/home/anthonypark6904/module/model.py", line 148, in __call__
+    mean, logvar = self.encoder(x)
+  File "/home/anthonypark6904/module/model.py", line 105, in __call__
+    x = nn.Dense(500, name='fc1')(x)
+  File "<string>", line 12, in __init__
+flax.errors.NameInUseError: Could not create submodule "fc1" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)

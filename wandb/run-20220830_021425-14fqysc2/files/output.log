@@ -1,0 +1,30 @@
+
+Loading dataset...
+Traceback (most recent call last):
+  File "CVAE_main.py", line 89, in <module>
+    data = mel_dataset(dataset_dir)
+  File "/home/anthonypark6904/module/dataloader.py", line 16, in __init__
+    song_meta = json.load(f)
+  File "/usr/lib/python3.8/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+  File "/usr/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.8/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "CVAE_main.py", line 89, in <module>
+    data = mel_dataset(dataset_dir)
+  File "/home/anthonypark6904/module/dataloader.py", line 16, in __init__
+    song_meta = json.load(f)
+  File "/usr/lib/python3.8/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+  File "/usr/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.8/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+KeyboardInterrupt

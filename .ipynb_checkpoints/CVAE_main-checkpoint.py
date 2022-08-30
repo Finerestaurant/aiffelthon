@@ -1,5 +1,5 @@
 from dataloader import mel_dataset
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 from model import CVAE
 
 import flax 
@@ -12,6 +12,14 @@ import jax.numpy as jnp
 import optax
 from tqdm import tqdm
 import os
+import wandb
+import matplotlib.pyplot as plt
+
+wandb.init(
+    project='CVAE',
+    entity='seegong'
+)
+
 
 # print(jax.local_devices())
 
@@ -37,10 +45,10 @@ def kl_divergence(mean, logvar):
     return -0.5 * jnp.sum(1 + logvar - jnp.square(mean) - jnp.exp(logvar))
 
 
-# @jax.vmap
-# def binary_cross_entropy_with_logits(logits, labels):
-#     logits = nn.log_sigmoid(logits)
-#     return -jnp.sum(labels * logits + (1. - labels) * jnp.log(-jnp.expm1(logits)))
+@jax.vmap
+def binary_cross_entropy_with_logits(logits, labels):
+    logits = nn.log_sigmoid(logits)
+    return -jnp.sum(labels * logits + (1. - labels) * jnp.log(-jnp.expm1(logits)))
 
 
 @jax.jit
@@ -49,16 +57,25 @@ def train_step(state, x, y, z_rng):
     def loss_fn(params):
         recon_x, mean, logvar = CVAE().apply({'params': params['params']}, x, y , z_rng)
 
-        bce_loss = optax.sigmoid_binary_cross_entropy(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
-        kld_loss = kl_divergence(mean, logvar).mean()
-        loss = bce_loss + kld_loss
-        return loss
+        bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
+        # kld_loss = kl_divergence(mean, logvar).mean()
+        # loss = bce_loss + kld_loss
+        return bce_loss
     
     grad_fn = jax.value_and_grad(loss_fn)
     loss, grads = grad_fn(state.params)
     
     return state.apply_gradients(grads=grads), loss
 
+@jax.jit
+def eval_step(state, x, y, z_rng):
+    
+    recon_x, mean, logvar = CVAE().apply({'params': state.params['params']}, x, y , z_rng)
+    bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
+    kld_loss = kl_divergence(mean, logvar).mean()
+    loss = bce_loss + kld_loss
+    
+    return recon_x, loss, bce_loss, kld_loss
 
 
 if __name__ == "__main__":
@@ -66,14 +83,28 @@ if __name__ == "__main__":
     lr = 0.0001
     rng = jax.random.PRNGKey(303)
     
+    
     # ---Load dataset---
     print("Loading dataset...")
     dataset_dir = os.path.join(os.path.expanduser('~'),'dataset')
     data = mel_dataset(dataset_dir)
     print(f'Loaded data : {len(data)}')
-    train_dataloader = DataLoader(data, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_batch)
+    
+    dataset_size = len(data)
+    train_size = int(dataset_size * 0.8)
+    test_size = dataset_size - train_size
+    
+    train_dataset, test_dataset = random_split(data, [train_size, test_size])
+
+    
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_batch)
+    test_dataloader = DataLoader(test_dataset, batch_size=int(batch_size/4), shuffle=True, num_workers=0, collate_fn=collate_batch)
+    
     print(f'batch_size = {batch_size}')
     print(f'learning rate = {lr}')
+    print(f'train_size = {train_size}')
+    print(f'test_size = {test_size}')
+    
     
     print('Data load complete!\n')
 
@@ -88,28 +119,54 @@ if __name__ == "__main__":
     
     print("Initialize complete!!\n")
     # ---train model---
-    epoch = 50
+    epoch = 100
     # checkpoint_dir = str(input('checkpoint dir : '))
     
 
     for i in range(epoch):
         train_data = iter(train_dataloader)
-        loss_mean = 0
+        test_data = iter(test_dataloader)
+        
+        train_loss_mean = 0
+        test_loss_mean = 0
+        
         print(f'\nEpoch {i+1}')
         
         for j in range(len(train_dataloader)):
             rng, key = jax.random.split(rng)
             x, y = next(train_data)
-            x = (x / 100) + 1 # normalization : min = 0, max = 2
-            state, loss = train_step(state, x, y, rng)
+            test_x, test_y = next(test_data)
             
-            loss_mean += loss
+            x = (x / 100) + 1 # normalization : min = 0, max = 2
+            test_x = (test_x / 100) + 1 # normalization : min = 0, max = 2
+            
+            state, train_loss = train_step(state, x, y, rng)           
+            recon_x, test_loss, bce_loss, kld_loss = eval_step(state, test_x, test_y, rng)
+            wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'bce_loss':bce_loss,'kld_loss':kld_loss})
+            train_loss_mean += train_loss
+            test_loss_mean += test_loss
+            
+            if j % 100 == 0:
+                
+                recon_x = recon_x.reshape(recon_x.shape[0], x.shape[1], x.shape[2])       
+                
+                plt.imshow(recon_x[0], aspect='auto', origin='lower', interpolation='none')
+                plt.savefig('recon.png', figsize=(16, 16))
+                
+                plt.imshow(test_x[0], aspect='auto', origin='lower', interpolation='none')
+                plt.savefig('x.png', figsize=(16, 16))
+                wandb.log({'reconstruction' : [
+                            wandb.Image('recon.png')
+                            ], 
+                           'original image' : [
+                            wandb.Image('x.png')
+                            ]})
+                
+            print(f'step : {j}/{len(train_dataloader)}, train_loss : {round(train_loss, 3)}, test_loss : {round(test_loss, 3)}', end='\r')
 
-            print(f'step : {j}/{len(train_dataloader)}, loss : {loss}', end='\r')
-
-        print(f'epoch {i+1} - average loss : {loss_mean/len(train_dataloader)}')
-        
-
+        print(f'epoch {i+1} - average loss - train : {round(train_loss_mean/len(train_dataloader), 3)}, test : {round(test_loss_mean/len(test_dataloader), 3)}')
+    
+wandb.finish()
 
 
 
