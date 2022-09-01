@@ -1,0 +1,404 @@
+
+Loading dataset...
+Loaded data : 93389
+batch_size = 128
+learning rate = 0.0001
+train_size = 74711
+test_size = 18678
+Data load complete!
+Initializing model....
+Initialize complete!!
+Epoch 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 1 - average loss - train : 15490.396484375, test : 443.712036132812565625
+Epoch 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 2 - average loss - train : 200.79901123046875, test : 201.001007080078126
+Epoch 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 3 - average loss - train : 191.8820037841797, test : 191.9090118408203536
+Epoch 4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 4 - average loss - train : 186.4130096435547, test : 186.3510131835937568
+Epoch 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 5 - average loss - train : 183.4870147705078, test : 183.5390014648437574
+Epoch 6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 6 - average loss - train : 181.71701049804688, test : 181.564010620117244
+Epoch 7
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 7 - average loss - train : 180.30300903320312, test : 180.353012084960945
+Epoch 8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 8 - average loss - train : 179.22300720214844, test : 179.224014282226562
+Epoch 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+step : 409/584, train_loss : 190.36801147460938, test_loss : 174.78500366210938
+Traceback (most recent call last):
+  File "Conv1d_VAE_main.py", line 142, in <module>
+    wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'mse_loss':mse_loss,'kld_loss':kld_loss})
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 289, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1591, in log
+    self._log(data=data, step=step, commit=commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1375, in _log
+    self._partial_history_callback(data, step, commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1259, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/interface/interface.py", line 548, in publish_partial_history
+    item.value_json = json_dumps_safer_history(v)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 827, in json_dumps_safer_history
+    return json.dumps(obj, cls=WandBHistoryJSONEncoder, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 790, in default
+    obj, converted = json_friendly(obj)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 606, in json_friendly
+    obj = get_jax_tensor(obj)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 482, in get_jax_tensor
+    return jax.device_get(obj)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 2928, in device_get
+    return tree_map(_device_get, x)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/tree_util.py", line 205, in tree_map
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/tree_util.py", line 205, in <genexpr>
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 2889, in _device_get
+    return toarray()
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/device_array.py", line 265, in __array__
+    return np.asarray(self._value, dtype=dtype)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "Conv1d_VAE_main.py", line 142, in <module>
+    wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'mse_loss':mse_loss,'kld_loss':kld_loss})
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 289, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1591, in log
+    self._log(data=data, step=step, commit=commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1375, in _log
+    self._partial_history_callback(data, step, commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1259, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/interface/interface.py", line 548, in publish_partial_history
+    item.value_json = json_dumps_safer_history(v)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 827, in json_dumps_safer_history
+    return json.dumps(obj, cls=WandBHistoryJSONEncoder, **kwargs)
+  File "/usr/lib/python3.8/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/usr/lib/python3.8/json/encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/usr/lib/python3.8/json/encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 790, in default
+    obj, converted = json_friendly(obj)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 606, in json_friendly
+    obj = get_jax_tensor(obj)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 482, in get_jax_tensor
+    return jax.device_get(obj)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 2928, in device_get
+    return tree_map(_device_get, x)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/tree_util.py", line 205, in tree_map
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/tree_util.py", line 205, in <genexpr>
+    return treedef.unflatten(f(*xs) for xs in zip(*all_leaves))
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 2889, in _device_get
+    return toarray()
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/device_array.py", line 265, in __array__
+    return np.asarray(self._value, dtype=dtype)
+KeyboardInterrupt

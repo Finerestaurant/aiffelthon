@@ -1,6 +1,6 @@
 from dataloader import mel_dataset
 from torch.utils.data import DataLoader, random_split
-from Conv2d_VAE import Conv2d_VAE
+from Conv2d_model import Conv2d_VAE
 
 import flax 
 import flax.linen as nn
@@ -44,6 +44,10 @@ def init_state(model, x_shape, key, lr) -> train_state.TrainState:
 def kl_divergence(mean, logvar):
     return -0.5 * jnp.sum(1 + logvar - jnp.square(mean) - jnp.exp(logvar))
 
+@jax.vmap
+def binary_cross_entropy_with_logits(logits, labels):
+    logits = nn.log_sigmoid(logits)
+    return -jnp.sum(labels * logits + (1. - labels) * jnp.log(-jnp.expm1(logits)))
 
 
 @jax.jit
@@ -131,12 +135,12 @@ if __name__ == "__main__":
             x, y = next(train_data)
             test_x, test_y = next(test_data)
             
-            x = (x / 100) + 1
-            test_x = (test_x / 100) + 1
+            x = ((x / 200) + 0.5)
+            test_x = ((test_x / 200) + 0.5)
             
             state, train_loss = train_step(state, x, rng)           
             recon_x, test_loss, mse_loss, kld_loss = eval_step(state, test_x, rng)
-            wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'bce_loss':mse_loss, 'kld_loss':kld_loss})
+            wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'mse_loss':mse_loss, 'kld_loss':kld_loss})
             train_loss_mean += train_loss
             test_loss_mean += test_loss
             

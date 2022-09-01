@@ -11,44 +11,44 @@ class Encoder(nn.Module):
     @nn.compact
     def __call__(self, x):
         
-        x = nn.Conv(512, kernel_size=(3,3),  strides=[3,3], padding='same')(x)
+        x = nn.Conv(512, kernel_size=(3,3),  strides=[2,2], padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
-        x = nn.max_pool(x, window_shape=(2,2), strides=(2,2))
+        x = nn.normalization.BatchNorm(True)(x)
+        # x = nn.max_pool(x, window_shape=(2,2), strides=(2,2))
 
         
         x = nn.Conv(512,kernel_size=(3,3),  padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         x = nn.max_pool(x, window_shape=(2,2), strides=(2,2))
 
         
         x = nn.Conv(256,kernel_size=(3,3),  padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
  
 
         x = nn.Conv(128,kernel_size=(3,3), padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         
         x = nn.Conv(64,kernel_size=(3,3), padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         
         
         x = nn.Conv(32, kernel_size=(3, 3),  padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         
         
         x = nn.Conv(16, kernel_size=(2,2), strides=[1,1], padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         
-        x = nn.Conv(1,kernel_size=(2,2), strides=[1,1])(x)
+        x = nn.Conv(1,kernel_size=(2,2), strides=[1,1],  padding='same')(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
 
         
         x = x.reshape(x.shape[0], -1)
@@ -73,15 +73,15 @@ class Decoder(nn.Module):
         
         x = nn.ConvTranspose(128, kernel_size=(3,3), strides=[1,1])(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         
         x = nn.ConvTranspose(256, kernel_size=(3,3))(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)        
+        x = nn.normalization.BatchNorm(True)(x)        
         
         x = nn.ConvTranspose(512, kernel_size=(3,3), strides=[2,2])(x)
         x = nn.relu(x)
-        # x = nn.normalization.BatchNorm(True)(x)
+        x = nn.normalization.BatchNorm(True)(x)
         
         x = nn.ConvTranspose(1024, kernel_size=(3,3))(x)
         x = nn.relu(x)

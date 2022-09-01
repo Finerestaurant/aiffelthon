@@ -93,7 +93,7 @@ def reparameterize(rng, mean, logvar):
     eps = jax.random.normal(rng, logvar.shape)
     return mean + eps * std    
 
-class CVAE(nn.Module):
+class Conv1d_CVAE(nn.Module):
     latents: int = 20
     recon_shape: int = 1876
     
