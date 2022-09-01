@@ -1,0 +1,35 @@
+
+WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
+Loading dataset...
+Traceback (most recent call last):
+  File "SampleCNN_main.py", line 91, in <module>
+    data = mel_dataset(dataset_dir)
+  File "/home/anthonypark6904/module/dataloader.py", line 40, in __init__
+    if np.load(i).shape[1] != 1876:
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/npyio.py", line 413, in load
+    return format.read_array(fid, allow_pickle=allow_pickle,
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 731, in read_array
+    shape, fortran_order, dtype = _read_array_header(fp, version)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 594, in _read_array_header
+    header = _filter_header(header)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 555, in _filter_header
+    for token in tokenize.generate_tokens(StringIO(s).readline):
+  File "/usr/lib/python3.8/tokenize.py", line 535, in _tokenize
+    yield TokenInfo(NUMBER, token, spos, epos, line)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "SampleCNN_main.py", line 91, in <module>
+    data = mel_dataset(dataset_dir)
+  File "/home/anthonypark6904/module/dataloader.py", line 40, in __init__
+    if np.load(i).shape[1] != 1876:
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/npyio.py", line 413, in load
+    return format.read_array(fid, allow_pickle=allow_pickle,
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 731, in read_array
+    shape, fortran_order, dtype = _read_array_header(fp, version)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 594, in _read_array_header
+    header = _filter_header(header)
+  File "/usr/local/lib/python3.8/dist-packages/numpy/lib/format.py", line 555, in _filter_header
+    for token in tokenize.generate_tokens(StringIO(s).readline):
+  File "/usr/lib/python3.8/tokenize.py", line 535, in _tokenize
+    yield TokenInfo(NUMBER, token, spos, epos, line)
+KeyboardInterrupt

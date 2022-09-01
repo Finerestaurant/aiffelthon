@@ -53,6 +53,8 @@ def binary_cross_entropy_with_logits(logits, labels):
 @jax.jit
 def train_step(state, x, z_rng):
     
+    
+    x = jnp.expand_dims(x, axis = -1)
     def loss_fn(params):
         recon_x, mean, logvar = Conv2d_VAE().apply(params, x, z_rng)
 
@@ -69,6 +71,7 @@ def train_step(state, x, z_rng):
 @jax.jit
 def eval_step(state, x, z_rng):
     
+    x = jnp.expand_dims(x, axis = -1)
     recon_x, mean, logvar = Conv2d_VAE().apply(state.params, x, z_rng)
     mse_loss = ((recon_x - jnp.expand_dims(x, axis=-1))**2).mean()
     kld_loss = kl_divergence(mean, logvar).mean()
@@ -88,6 +91,8 @@ if __name__ == "__main__":
     dataset_dir = os.path.join(os.path.expanduser('~'),'dataset')
     data = mel_dataset(dataset_dir)
     print(f'Loaded data : {len(data)}\n')
+    target = data[0][0] # (48, 1876)
+    target = jnp.expand_dims(target, axis = 0)
     
     dataset_size = len(data)
     train_size = int(dataset_size * 0.8)
@@ -117,16 +122,17 @@ if __name__ == "__main__":
     
     print("Initialize complete!!\n")
     # ---train model---
-    epoch = 100
+    epoch = 5
     # checkpoint_dir = str(input('checkpoint dir : '))
     
-
+    
     for i in range(epoch):
         train_data = iter(train_dataloader)
         test_data = iter(test_dataloader)
         
         train_loss_mean = 0
         test_loss_mean = 0
+        
         
         print(f'\nEpoch {i+1}')
         
@@ -135,22 +141,32 @@ if __name__ == "__main__":
             x, y = next(train_data)
             test_x, test_y = next(test_data)
             
-            x = ((x / 200) + 0.5)
-            test_x = ((test_x / 200) + 0.5)
+            # x = x + 100
+            # test_x = test_x + 100
             
             state, train_loss = train_step(state, x, rng)           
-            recon_x, test_loss, mse_loss, kld_loss = eval_step(state, test_x, rng)
+            _, test_loss, mse_loss, kld_loss = eval_step(state, test_x, rng)
+            
+            recon_x, _, _, _ = eval_step(state, target, rng)
             wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'mse_loss':mse_loss, 'kld_loss':kld_loss})
             train_loss_mean += train_loss
             test_loss_mean += test_loss
             
+            
+            
             if j % 100 == 0: 
                 
-                plt.imshow(recon_x[0], aspect='auto', origin='lower', interpolation='none')
-                plt.savefig('recon.png')
+                fig1, ax1 = plt.subplots()
+                im1 = ax1.imshow(recon_x[0], aspect='auto', origin='lower', interpolation='none')
+                fig1.colorbar(im1)
+                fig1.savefig('recon.png')
+
+
+                fig2, ax2 = plt.subplots()
+                im2 = ax2.imshow(x[0], aspect='auto', origin='lower', interpolation='none')
+                fig2.colorbar(im2)
+                fig2.savefig('x.png')
                 
-                plt.imshow(test_x[0], aspect='auto', origin='lower', interpolation='none')
-                plt.savefig('x.png')
                 wandb.log({'reconstruction' : [
                             wandb.Image('recon.png')
                             ], 
@@ -162,6 +178,12 @@ if __name__ == "__main__":
             print(f'step : {j}/{len(train_dataloader)}, train_loss : {round(train_loss, 3)}, test_loss : {round(test_loss, 3)}', end='\r')
 
         print(f'epoch {i+1} - average loss - train : {round(train_loss_mean/len(train_dataloader), 3)}, test : {round(test_loss_mean/len(test_dataloader), 3)}')
+    
+    
+    
+    
+    
+    
     
 wandb.finish()
 

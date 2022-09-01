@@ -1,0 +1,22 @@
+{
+    "os": "Linux-5.13.0-1027-gcp-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2022-09-01T01:57:01.393050",
+    "startedAt": "2022-09-01T01:57:01.004510",
+    "docker": null,
+    "cpu_count": 96,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "Conv2d_VAE_main.py",
+    "codePath": "Conv2d_VAE_main.py",
+    "git": {
+        "remote": "https://github.com/Finerestaurant/aiffelthon",
+        "commit": "78c6cd921f18d77f0fc79b7fd34ecb3cfbb47d82"
+    },
+    "email": "anthonypark6904@gmail.com",
+    "root": "/home/anthonypark6904/module",
+    "host": "t1v-n-4d0664b8-w-0",
+    "username": "anthonypark6904",
+    "executable": "/usr/bin/python3"
+}

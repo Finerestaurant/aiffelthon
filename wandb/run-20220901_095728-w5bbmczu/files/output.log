@@ -1,0 +1,217 @@
+
+Loading dataset...
+Loaded data : 93389
+batch_size = 16
+learning rate = 0.0001
+train_size = 74711
+test_size = 18678
+Data load complete!
+Initializing model....
+Traceback (most recent call last):
+  File "Dilated_conv_vae_main.py", line 117, in <module>
+    state = init_state(model,
+  File "Dilated_conv_vae_main.py", line 35, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), key)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1273, in init
+    _, v_out = self.init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1229, in init_with_output
+    return init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 897, in wrapper
+    return apply(fn, mutable=mutable, flags=init_flags)({}, *args, rngs=rngs,
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1647, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 125, in __call__
+    recon_x = self.decoder(z)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 78, in __call__
+    x = nn.ConvTranspose(32, kernel_size=(3,3), strides=[1,1], kernel_dilation=(8,))(x)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/linear.py", line 593, in __call__
+    y = lax.conv_transpose(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 343, in conv_transpose
+    return conv_general_dilated(lhs, rhs, one, pads, strides, rhs_dilation, dn,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 157, in conv_general_dilated
+    return conv_general_dilated_p.bind(
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 324, in bind
+    return self.bind_with_trace(find_top_trace(args), args, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 327, in bind_with_trace
+    out = trace.process_primitive(self, map(trace.full_raise, args), params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 684, in process_primitive
+    return primitive.impl(*tracers, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 99, in apply_primitive
+    compiled_fun = xla_primitive_callable(prim, *unsafe_map(arg_spec, args),
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/util.py", line 220, in wrapper
+    return cached(config._trace_context(), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/util.py", line 213, in cached
+    return f(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 173, in xla_primitive_callable
+    compiled = _xla_callable_uncached(lu.wrap_init(prim_fun), device, None,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 257, in _xla_callable_uncached
+    return lower_xla_callable(fun, device, backend, name, donated_invars, False,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 302, in lower_xla_callable
+    jaxpr, out_type, consts = pe.trace_to_jaxpr_final2(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2188, in trace_to_jaxpr_final2
+    jaxpr, out_type, consts = trace_to_subjaxpr_dynamic2(fun, main, debug_info)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2138, in trace_to_subjaxpr_dynamic2
+    ans = fun.call_wrapped(*in_tracers_)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 168, in prim_fun
+    out = prim.bind(*args, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 324, in bind
+    return self.bind_with_trace(find_top_trace(args), args, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 327, in bind_with_trace
+    out = trace.process_primitive(self, map(trace.full_raise, args), params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 1817, in process_primitive
+    return self.default_process_primitive(primitive, tracers, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 1821, in default_process_primitive
+    out_avals, effects = primitive.abstract_eval(*avals, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 360, in abstract_eval_
+    return abstract_eval(*args, **kwargs), no_effects
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/utils.py", line 66, in standard_abstract_eval
+    return core.ShapedArray(shape_rule(*avals, **kwargs),
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 409, in _conv_general_dilated_shape_rule
+    out_trans = conv_shape_tuple(lhs_trans, rhs_trans, window_strides, padding,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 783, in conv_shape_tuple
+    raise TypeError(msg.format(len(lhs_shape) - 2, len(pads)))
+jax._src.traceback_util.UnfilteredStackTrace: TypeError: Wrong number of explicit pads for convolution: expected 2, got 1.
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "Dilated_conv_vae_main.py", line 117, in <module>
+    state = init_state(model,
+  File "Dilated_conv_vae_main.py", line 35, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), key)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 125, in __call__
+    recon_x = self.decoder(z)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 78, in __call__
+    x = nn.ConvTranspose(32, kernel_size=(3,3), strides=[1,1], kernel_dilation=(8,))(x)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/linear.py", line 593, in __call__
+    y = lax.conv_transpose(
+TypeError: Wrong number of explicit pads for convolution: expected 2, got 1.
+Traceback (most recent call last):
+  File "Dilated_conv_vae_main.py", line 117, in <module>
+    state = init_state(model,
+  File "Dilated_conv_vae_main.py", line 35, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), key)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1273, in init
+    _, v_out = self.init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1229, in init_with_output
+    return init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 897, in wrapper
+    return apply(fn, mutable=mutable, flags=init_flags)({}, *args, rngs=rngs,
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1647, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 125, in __call__
+    recon_x = self.decoder(z)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 78, in __call__
+    x = nn.ConvTranspose(32, kernel_size=(3,3), strides=[1,1], kernel_dilation=(8,))(x)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/linear.py", line 593, in __call__
+    y = lax.conv_transpose(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 343, in conv_transpose
+    return conv_general_dilated(lhs, rhs, one, pads, strides, rhs_dilation, dn,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 157, in conv_general_dilated
+    return conv_general_dilated_p.bind(
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 324, in bind
+    return self.bind_with_trace(find_top_trace(args), args, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 327, in bind_with_trace
+    out = trace.process_primitive(self, map(trace.full_raise, args), params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 684, in process_primitive
+    return primitive.impl(*tracers, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 99, in apply_primitive
+    compiled_fun = xla_primitive_callable(prim, *unsafe_map(arg_spec, args),
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/util.py", line 220, in wrapper
+    return cached(config._trace_context(), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/util.py", line 213, in cached
+    return f(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 173, in xla_primitive_callable
+    compiled = _xla_callable_uncached(lu.wrap_init(prim_fun), device, None,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 257, in _xla_callable_uncached
+    return lower_xla_callable(fun, device, backend, name, donated_invars, False,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 302, in lower_xla_callable
+    jaxpr, out_type, consts = pe.trace_to_jaxpr_final2(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2188, in trace_to_jaxpr_final2
+    jaxpr, out_type, consts = trace_to_subjaxpr_dynamic2(fun, main, debug_info)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2138, in trace_to_subjaxpr_dynamic2
+    ans = fun.call_wrapped(*in_tracers_)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 168, in prim_fun
+    out = prim.bind(*args, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 324, in bind
+    return self.bind_with_trace(find_top_trace(args), args, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 327, in bind_with_trace
+    out = trace.process_primitive(self, map(trace.full_raise, args), params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 1817, in process_primitive
+    return self.default_process_primitive(primitive, tracers, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 1821, in default_process_primitive
+    out_avals, effects = primitive.abstract_eval(*avals, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 360, in abstract_eval_
+    return abstract_eval(*args, **kwargs), no_effects
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/utils.py", line 66, in standard_abstract_eval
+    return core.ShapedArray(shape_rule(*avals, **kwargs),
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 409, in _conv_general_dilated_shape_rule
+    out_trans = conv_shape_tuple(lhs_trans, rhs_trans, window_strides, padding,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/lax/convolution.py", line 783, in conv_shape_tuple
+    raise TypeError(msg.format(len(lhs_shape) - 2, len(pads)))
+jax._src.traceback_util.UnfilteredStackTrace: TypeError: Wrong number of explicit pads for convolution: expected 2, got 1.
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "Dilated_conv_vae_main.py", line 117, in <module>
+    state = init_state(model,
+  File "Dilated_conv_vae_main.py", line 35, in init_state
+    params = model.init({'params': key}, jnp.ones(x_shape), key)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 125, in __call__
+    recon_x = self.decoder(z)
+  File "/home/anthonypark6904/module/dilated_Conv_vae_model.py", line 78, in __call__
+    x = nn.ConvTranspose(32, kernel_size=(3,3), strides=[1,1], kernel_dilation=(8,))(x)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/linear.py", line 593, in __call__
+    y = lax.conv_transpose(
+TypeError: Wrong number of explicit pads for convolution: expected 2, got 1.

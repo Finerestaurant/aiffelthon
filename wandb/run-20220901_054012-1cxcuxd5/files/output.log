@@ -1,0 +1,155 @@
+
+WARNING:absl:No GPU/TPU found, falling back to CPU. (Set TF_CPP_MIN_LOG_LEVEL=0 and rerun for more info.)
+Loading dataset...
+batch_size = 16
+learning rate = 0.0001
+train_size = 65372
+validation_size = 18677
+test_size = 9340
+Data load complete!
+Initializing model....
+Traceback (most recent call last):
+  File "SampleCNN_main.py", line 123, in <module>
+    print(nn.tabulate(model, rng)(next(iter(train_dataloader))[0]))
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 173, in _tabulate_fn
+    table = table_fn(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in _get_table_fn
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in <lambda>
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1273, in init
+    _, v_out = self.init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1229, in init_with_output
+    return init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 897, in wrapper
+    return apply(fn, mutable=mutable, flags=init_flags)({}, *args, rngs=rngs,
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1647, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model.py", line 60, in __call__
+    x = nn.Dropout(rate=0.5)(x, deterministic=self.deterministic)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/stochastic.py", line 65, in __call__
+    rng = self.make_rng('dropout')
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1045, in make_rng
+    return self.scope.make_rng(name)
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 651, in make_rng
+    raise errors.InvalidRngError(f'{self.name} needs PRNG for "{name}"')
+jax._src.traceback_util.UnfilteredStackTrace: flax.errors.InvalidRngError: Dropout_0 needs PRNG for "dropout" (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.InvalidRngError)
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "SampleCNN_main.py", line 123, in <module>
+    print(nn.tabulate(model, rng)(next(iter(train_dataloader))[0]))
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 173, in _tabulate_fn
+    table = table_fn(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in _get_table_fn
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 3043, in eval_shape
+    out = pe.abstract_eval_fun(wrapped_fun.call_wrapped,
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 695, in abstract_eval_fun
+    _, avals_out, _ = trace_to_jaxpr_dynamic(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2092, in trace_to_jaxpr_dynamic
+    jaxpr, out_avals, consts = trace_to_subjaxpr_dynamic(
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2109, in trace_to_subjaxpr_dynamic
+    ans = fun.call_wrapped(*in_tracers_)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in <lambda>
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/home/anthonypark6904/module/model.py", line 60, in __call__
+    x = nn.Dropout(rate=0.5)(x, deterministic=self.deterministic)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/stochastic.py", line 65, in __call__
+    rng = self.make_rng('dropout')
+flax.errors.InvalidRngError: Dropout_0 needs PRNG for "dropout" (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.InvalidRngError)
+Traceback (most recent call last):
+  File "SampleCNN_main.py", line 123, in <module>
+    print(nn.tabulate(model, rng)(next(iter(train_dataloader))[0]))
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 173, in _tabulate_fn
+    table = table_fn(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in _get_table_fn
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in <lambda>
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1273, in init
+    _, v_out = self.init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1229, in init_with_output
+    return init_with_output(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 897, in wrapper
+    return apply(fn, mutable=mutable, flags=init_flags)({}, *args, rngs=rngs,
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1647, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model.py", line 60, in __call__
+    x = nn.Dropout(rate=0.5)(x, deterministic=self.deterministic)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/stochastic.py", line 65, in __call__
+    rng = self.make_rng('dropout')
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1045, in make_rng
+    return self.scope.make_rng(name)
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 651, in make_rng
+    raise errors.InvalidRngError(f'{self.name} needs PRNG for "{name}"')
+jax._src.traceback_util.UnfilteredStackTrace: flax.errors.InvalidRngError: Dropout_0 needs PRNG for "dropout" (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.InvalidRngError)
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "SampleCNN_main.py", line 123, in <module>
+    print(nn.tabulate(model, rng)(next(iter(train_dataloader))[0]))
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 173, in _tabulate_fn
+    table = table_fn(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in _get_table_fn
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 3043, in eval_shape
+    out = pe.abstract_eval_fun(wrapped_fun.call_wrapped,
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 695, in abstract_eval_fun
+    _, avals_out, _ = trace_to_jaxpr_dynamic(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2092, in trace_to_jaxpr_dynamic
+    jaxpr, out_avals, consts = trace_to_subjaxpr_dynamic(
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2109, in trace_to_subjaxpr_dynamic
+    ans = fun.call_wrapped(*in_tracers_)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/summary.py", line 200, in <lambda>
+    shape_variables = jax.eval_shape(lambda: module.init(
+  File "/home/anthonypark6904/module/model.py", line 60, in __call__
+    x = nn.Dropout(rate=0.5)(x, deterministic=self.deterministic)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/stochastic.py", line 65, in __call__
+    rng = self.make_rng('dropout')
+flax.errors.InvalidRngError: Dropout_0 needs PRNG for "dropout" (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.InvalidRngError)
+Initialize complete!!

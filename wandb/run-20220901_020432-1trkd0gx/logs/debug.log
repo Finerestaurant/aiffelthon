@@ -1,0 +1,24 @@
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_setup.py:_flush():76] Configure stats pid to 248998
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_setup.py:_flush():76] Loading settings from /home/anthonypark6904/.config/wandb/settings
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_setup.py:_flush():76] Loading settings from /home/anthonypark6904/module/wandb/settings
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_setup.py:_flush():76] Loading settings from environment variables: {'_require_service': 'True'}
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'Conv2d_VAE_main.py', 'program': 'Conv2d_VAE_main.py'}
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_init.py:_log_setup():461] Logging user logs to /home/anthonypark6904/module/wandb/run-20220901_020432-1trkd0gx/logs/debug.log
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_init.py:_log_setup():462] Logging internal logs to /home/anthonypark6904/module/wandb/run-20220901_020432-1trkd0gx/logs/debug-internal.log
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_init.py:init():495] calling init triggers
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_init.py:init():498] wandb.init called with sweep_config: {}
+config: {}
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_init.py:init():548] starting backend
+2022-09-01 02:04:32,930 INFO    MainThread:248998 [wandb_init.py:init():552] setting up manager
+2022-09-01 02:04:32,934 INFO    MainThread:248998 [backend.py:_multiprocessing_setup():97] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2022-09-01 02:04:32,936 INFO    MainThread:248998 [wandb_init.py:init():558] backend started and connected
+2022-09-01 02:04:32,940 INFO    MainThread:248998 [wandb_init.py:init():636] updated telemetry
+2022-09-01 02:04:32,960 INFO    MainThread:248998 [wandb_init.py:init():667] communicating run to backend with 30 second timeout
+2022-09-01 02:04:33,270 INFO    MainThread:248998 [wandb_run.py:_on_init():1982] communicating current version
+2022-09-01 02:04:33,307 INFO    MainThread:248998 [wandb_run.py:_on_init():1986] got version response 
+2022-09-01 02:04:33,307 INFO    MainThread:248998 [wandb_init.py:init():700] starting run threads in backend
+2022-09-01 02:04:33,351 INFO    MainThread:248998 [wandb_run.py:_console_start():1962] atexit reg
+2022-09-01 02:04:33,351 INFO    MainThread:248998 [wandb_run.py:_redirect():1820] redirect: SettingsConsole.WRAP_RAW
+2022-09-01 02:04:33,351 INFO    MainThread:248998 [wandb_run.py:_redirect():1885] Wrapping output streams.
+2022-09-01 02:04:33,351 INFO    MainThread:248998 [wandb_run.py:_redirect():1907] Redirects installed.
+2022-09-01 02:04:33,352 INFO    MainThread:248998 [wandb_init.py:init():732] run started, returning control to user process

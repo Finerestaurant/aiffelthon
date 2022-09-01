@@ -51,7 +51,7 @@ class Encoder(nn.Module):
         # x = nn.normalization.BatchNorm(True)(x)
 
         
-        mean_x = nn.Dense(self.latents, name='fc3_mean')(x)
+        mean_x = nn.Dense(self.latents, name='fc3_mean')(x) # (128, 1, 20)
         logvar_x = nn.Dense(self.latents, name='fc3_logvar')(x)
         
         return mean_x, logvar_x
@@ -93,7 +93,7 @@ def reparameterize(rng, mean, logvar):
     eps = jax.random.normal(rng, logvar.shape)
     return mean + eps * std    
 
-class Conv1d_CVAE(nn.Module):
+class Conv1d_VAE(nn.Module):
     latents: int = 20
     recon_shape: int = 1876
     

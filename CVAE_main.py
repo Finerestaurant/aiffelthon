@@ -137,8 +137,8 @@ if __name__ == "__main__":
             x, y = next(train_data)
             test_x, test_y = next(test_data)
             
-            x = (x / 100) + 1 # normalization : min = 0, max = 2
-            test_x = (test_x / 100) + 1 # normalization : min = 0, max = 2
+            x = (x + 100) 
+            test_x = (test_x + 100)
             
             state, train_loss = train_step(state, x, y, rng)           
             recon_x, test_loss, bce_loss, kld_loss = eval_step(state, test_x, test_y, rng)
