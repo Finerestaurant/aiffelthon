@@ -160,13 +160,13 @@ if __name__ == "__main__":
                 im1 = ax1.imshow(recon_x[0], aspect='auto', origin='lower', interpolation='none')
                 fig1.colorbar(im1)
                 fig1.savefig('recon.png')
-
+                fig1.clf()
 
                 fig2, ax2 = plt.subplots()
                 im2 = ax2.imshow(x[0], aspect='auto', origin='lower', interpolation='none')
                 fig2.colorbar(im2)
                 fig2.savefig('x.png')
-                
+                fig2.clf()
                 wandb.log({'reconstruction' : [
                             wandb.Image('recon.png')
                             ], 

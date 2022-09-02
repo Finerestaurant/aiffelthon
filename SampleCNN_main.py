@@ -1,6 +1,6 @@
 from dataloader import mel_dataset
 from torch.utils.data import DataLoader, random_split
-from model import SampleCNN
+from model.supervised_model import SampleCNN
 
 import flax 
 import flax.linen as nn

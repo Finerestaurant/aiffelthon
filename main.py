@@ -1,25 +1,50 @@
-from dataloader import mel_dataset
-from torch.utils.data import DataLoader, random_split
-from dilated_Conv_vae_model import Dilated_Conv2d_VAE
-from linear_evaluation import linear_evaluation
+# 2022-09-02 16:23 Seoul
 
+# --- import dataset ---
+from utils.dataloader import mel_dataset
+from utils.losses import *
+from torch.utils.data import DataLoader, random_split
+
+# --- import model ---
+from model.supervised_model import *
+from model.Conv1d_model import Conv1d_VAE
+from model.Conv1d_model import Encoder as Encoder1d
+
+from model.Conv2d_model import Conv2d_VAE
+from model.Conv2d_model import Encoder as Encoder2d
+
+# --- import framework ---
 import flax 
 import flax.linen as nn
 from flax.training import train_state
-
 import jax
 import numpy as np
 import jax.numpy as jnp
 import optax
+
+import cloudpickle
+import argparse
 from tqdm import tqdm
 import os
 import wandb
 import matplotlib.pyplot as plt
 
 
+# --- define argparser ---
+parser = argparse.ArgumentParser()
+parser.add_argument('--batch_size', type = int, default=16, help='batch_size')
+parser.add_argument('--learning_rate', type = float, default=0.0001, help='learning_rate')
+parser.add_argument('--epoch', type = int, default=5, help='Epoch')
+parser.add_argument('--model_type', type = str, default=None, help='model_type')
+parser.add_argument('--dilation', type = bool, default=False, help='dilation')
+parser.add_argument('--linear_evaluation', type=bool, default=False, help='Linear_evaluation')
+parser.add_argument('--num_workers', type=int, default=0, help='num_workers')
 
-# print(jax.local_devices())
+args = parser.parse_args()
 
+
+
+# --- collate batch for dataloader ---
 def collate_batch(batch):
     x_train = [x for x, _ in batch]
     y_train = [y for _, y in batch]                  
@@ -27,36 +52,34 @@ def collate_batch(batch):
     return np.array(x_train), np.array(y_train)
 
 
+
+# --- define init state ---
 def init_state(model, x_shape, key, lr) -> train_state.TrainState:
     params = model.init({'params': key}, jnp.ones(x_shape), key)
-    # Create the optimizer
     optimizer = optax.adam(learning_rate=lr)
-    # Create a State
     return train_state.TrainState.create(
         apply_fn=model.apply,
         tx=optimizer,
         params=params)
 
-@jax.vmap
-def kl_divergence(mean, logvar):
-    return -0.5 * jnp.sum(1 + logvar - jnp.square(mean) - jnp.exp(logvar))
+def linear_init_state(model, x_shape, key, lr) -> train_state.TrainState:
+    params = model.init({'params': key}, jnp.ones(x_shape))
+    optimizer = optax.adam(learning_rate=lr)
+    return train_state.TrainState.create(
+        apply_fn=model.apply,
+        tx=optimizer,
+        params=params)
 
 
-# @jax.vmap
-# def binary_cross_entropy_with_logits(logits, labels):
-#     logits = nn.log_sigmoid(logits)
-#     return -jnp.sum(labels * logits + (1. - labels) * jnp.log(-jnp.expm1(logits)))
 
-
+# --- define train_step ---
 @jax.jit
-def train_step(state, x, z_rng):
+def train_step(state, x, z_rng):    
     
     def loss_fn(params):
-        recon_x, mean, logvar = Dilated_Conv2d_VAE().apply(params, x, z_rng)
-
-        # bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
+        recon_x, mean, logvar = model.apply(params, x, z_rng)
         kld_loss = kl_divergence(mean, logvar).mean()
-        mse_loss = ((recon_x - jnp.expand_dims(x, axis=-1))**2).mean()
+        mse_loss = ((recon_x - x)**2).mean()
         loss = mse_loss + kld_loss
         return loss
     
@@ -66,40 +89,72 @@ def train_step(state, x, z_rng):
     return state.apply_gradients(grads=grads), loss
 
 @jax.jit
+def linear_train_step(encoder, 
+                      enc_state, 
+                      enc_batch, 
+                      linear_state, 
+                      x, y):    
+    
+    latent = encoder.apply({'params':enc_state, 'batch_stats':enc_batch}, x)
+    
+    def loss_fn(params):
+        logits = linear_evaluation().apply(params, latent)
+        loss = jnp.mean(optax.softmax_cross_entropy(logits, y))
+        return loss, logits
+    
+    grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
+    (loss, logits), grads = grad_fn(linear_state.params)
+    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(labels, -1))
+    
+    return state.apply_gradients(grads=grads), loss
+
+
+
+# --- define eval step ---
+@jax.jit
 def eval_step(state, x, z_rng):
     
-    recon_x, mean, logvar = Dilated_Conv2d_VAE().apply(state.params, x, z_rng)
-    # bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
+    recon_x, mean, logvar = model.apply(state.params, x, z_rng)
     kld_loss = kl_divergence(mean, logvar).mean()
-    mse_loss = ((recon_x - jnp.expand_dims(x, axis=-1))**2).mean()
+    mse_loss = ((recon_x - x)**2).mean()
     loss = mse_loss + kld_loss
     
     return recon_x, loss, mse_loss, kld_loss
 
+@jax.jit
+def linear_eval_step(state, x, y):
+    
+    logits = linear_evaluation().apply(state.params, x)
+    loss = jnp.mean(optax.softmax_cross_entropy(logits, y))
+    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(labels, -1))
+    
+    return loss, accuracy
+
+
 
 if __name__ == "__main__":
-    batch_size = 4
-    lr = 0.0001
+    batch_size = args.batch_size
+    lr = args.learning_rate
+    dilation = args.dilation
+    
+    if args.model_type == 'Conv1d':
+        model = Conv1d_VAE(dilation=args.dilation)
+        encoder = Encoder1d()
+    elif args.model_type == 'Conv2d':
+        model = Conv2d_VAE(dilation=args.dilation)
+        encoder = Encoder2d()
+    else: 
+        raise Exception('Input Correct model type. Conv1d, Conv2d.')
+    
     rng = jax.random.PRNGKey(303)
     
     
     # ---Load dataset---
-    dev_or_train = input('dev or train? : ')
-    if dev_or_train == 'dev':
-        dataset_dir = os.path.join(os.path.expanduser('~'),'dev_dataset')
-    else:
-        dataset_dir = os.path.join(os.path.expanduser('~'),'dataset')
-        
-        
-    wandb.init(
-    project='dilated_Conv2d_VAE_linear',
-    entity='aiffelthon'
-    )
+    dataset_dir = os.path.join(os.path.expanduser('~'),'dataset')            
 
-    print("Loading dataset...")
-    
+    print("Loading dataset...")    
     data = mel_dataset(dataset_dir)
-    print(f'Loaded data : {len(data)}')
+    print(f'Loaded data : {len(data)}\n')
     
     dataset_size = len(data)
     train_size = int(dataset_size * 0.8)
@@ -111,16 +166,18 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_batch)
     test_dataloader = DataLoader(test_dataset, batch_size=int(batch_size/4), shuffle=True, num_workers=0, collate_fn=collate_batch)
     
-    print(f'batch_size = {batch_size}')
-    print(f'learning rate = {lr}')
+    print(f'batch_size = {args.batch_size}')
+    print(f'learning rate = {args.learning_rate}')
     print(f'train_size = {train_size}')
     print(f'test_size = {test_size}')
     
     
     print('Data load complete!\n')
-
+    print(nn.tabulate(model, rngs={'params': rng})(next(iter(train_dataloader))[0], rng))
+    
+    
+    
     # ---initializing model---
-    model = Dilated_Conv2d_VAE()
     print("Initializing model....")
     state = init_state(model, 
                        next(iter(train_dataloader))[0].shape, 
@@ -128,12 +185,16 @@ if __name__ == "__main__":
                        lr)
     
     print("Initialize complete!!\n")
-    # ---train model---
-    epoch = 100
-    # checkpoint_dir = str(input('checkpoint dir : '))
     
-
-    for i in range(epoch):
+    
+    
+    # ---train model---
+    wandb.init(
+    project=args.model_type,
+    entity='aiffelthon',
+    config = args
+    )
+    for i in range(args.epoch):
         train_data = iter(train_dataloader)
         test_data = iter(test_dataloader)
         
@@ -156,7 +217,7 @@ if __name__ == "__main__":
             train_loss_mean += train_loss
             test_loss_mean += test_loss
             
-            if j % 100 == 0:
+            if j % 1000 == 0:
                 
                 recon_x = recon_x.reshape(recon_x.shape[0], x.shape[1], x.shape[2])       
                 
@@ -166,13 +227,11 @@ if __name__ == "__main__":
                 fig1.savefig('recon.png')
                 plt.close(fig1)
 
-
                 fig2, ax2 = plt.subplots()
                 im2 = ax2.imshow(test_x[0], aspect='auto', origin='lower', interpolation='none')
                 fig2.colorbar(im2)
                 fig2.savefig('x.png')
                 plt.close(fig2)
-
                 
                 wandb.log({'reconstruction' : [
                             wandb.Image('recon.png')
@@ -185,4 +244,18 @@ if __name__ == "__main__":
 
         print(f'epoch {i+1} - average loss - train : {round(train_loss_mean/len(train_dataloader), 3)}, test : {round(test_loss_mean/len(test_dataloader), 3)}')
     
+    
+    print('Pre train complete!\n\n\n')
+    
+    
+    # --- linear evaluation, if true. ---
+    if args.linear_evaluation:
+        print('Linear evalutaion step.')
+        
+        enc_state = state['params']['encoder']
+        enc_batch = state['batch_stats']['encoder']
+        
+        
+        
+                      
 wandb.finish()

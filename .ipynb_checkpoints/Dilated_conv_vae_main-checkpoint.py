@@ -42,10 +42,10 @@ def kl_divergence(mean, logvar):
     return -0.5 * jnp.sum(1 + logvar - jnp.square(mean) - jnp.exp(logvar))
 
 
-@jax.vmap
-def binary_cross_entropy_with_logits(logits, labels):
-    logits = nn.log_sigmoid(logits)
-    return -jnp.sum(labels * logits + (1. - labels) * jnp.log(-jnp.expm1(logits)))
+# @jax.vmap
+# def binary_cross_entropy_with_logits(logits, labels):
+#     logits = nn.log_sigmoid(logits)
+#     return -jnp.sum(labels * logits + (1. - labels) * jnp.log(-jnp.expm1(logits)))
 
 
 @jax.jit
@@ -54,10 +54,10 @@ def train_step(state, x, z_rng):
     def loss_fn(params):
         recon_x, mean, logvar = Dilated_Conv2d_VAE().apply(params, x, z_rng)
 
-        bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
+        # bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
         kld_loss = kl_divergence(mean, logvar).mean()
         mse_loss = ((recon_x - jnp.expand_dims(x, axis=-1))**2).mean()
-        loss = mse_loss 
+        loss = mse_loss + kld_loss
         return loss
     
     grad_fn = jax.value_and_grad(loss_fn)
@@ -69,16 +69,16 @@ def train_step(state, x, z_rng):
 def eval_step(state, x, z_rng):
     
     recon_x, mean, logvar = Dilated_Conv2d_VAE().apply(state.params, x, z_rng)
-    bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
+    # bce_loss = binary_cross_entropy_with_logits(recon_x, x.reshape(x.shape[0], x.shape[1]*x.shape[2])).mean()
     kld_loss = kl_divergence(mean, logvar).mean()
     mse_loss = ((recon_x - jnp.expand_dims(x, axis=-1))**2).mean()
-    loss = mse_loss 
+    loss = mse_loss + kld_loss
     
     return recon_x, loss, mse_loss, kld_loss
 
 
 if __name__ == "__main__":
-    batch_size = 16
+    batch_size = 4
     lr = 0.0001
     rng = jax.random.PRNGKey(303)
     
@@ -147,8 +147,8 @@ if __name__ == "__main__":
             x, y = next(train_data)
             test_x, test_y = next(test_data)
             
-#             x = (x + 100) 
-#             test_x = (test_x + 100)
+            x = (x + 100) 
+            test_x = (test_x + 100)
             
             state, train_loss = train_step(state, x, rng)           
             recon_x, test_loss, mse_loss, kld_loss = eval_step(state, test_x, rng)
@@ -164,12 +164,15 @@ if __name__ == "__main__":
                 im1 = ax1.imshow(recon_x[0], aspect='auto', origin='lower', interpolation='none')
                 fig1.colorbar(im1)
                 fig1.savefig('recon.png')
+                plt.close(fig1)
 
 
                 fig2, ax2 = plt.subplots()
                 im2 = ax2.imshow(test_x[0], aspect='auto', origin='lower', interpolation='none')
                 fig2.colorbar(im2)
                 fig2.savefig('x.png')
+                plt.close(fig2)
+
                 
                 wandb.log({'reconstruction' : [
                             wandb.Image('recon.png')
