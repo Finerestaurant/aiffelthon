@@ -1,0 +1,66 @@
+
+Epoch 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+step : 279/4670, train_loss : 145.47000122070312, test_loss : 114.43100738525394
+Traceback (most recent call last):
+  File "main.py", line 244, in <module>
+    print(f'step : {j}/{len(train_dataloader)}, train_loss : {round(train_loss, 3)}, test_loss : {round(test_loss, 3)}', end='\r')
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/lib/redirect.py", line 643, in write
+    cb(data)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1889, in <lambda>
+    lambda data: self._console_raw_callback("stdout", data),
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1275, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/interface/interface.py", line 619, in publish_output_raw
+    o = pb.OutputRawRecord(output_type=otype, line=data)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "main.py", line 244, in <module>
+    print(f'step : {j}/{len(train_dataloader)}, train_loss : {round(train_loss, 3)}, test_loss : {round(test_loss, 3)}', end='\r')
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/lib/redirect.py", line 643, in write
+    cb(data)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1889, in <lambda>
+    lambda data: self._console_raw_callback("stdout", data),
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1275, in _console_raw_callback
+    self._backend.interface.publish_output_raw(name, data)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/interface/interface.py", line 619, in publish_output_raw
+    o = pb.OutputRawRecord(output_type=otype, line=data)
+
+step : 280/4670, train_loss : 142.01800537109375, test_loss : 114.98900604248047

@@ -14,10 +14,14 @@ def reparameterize(rng, mean, logvar):
 
 class Encoder(nn.Module):
     
+    linear:bool=False
     dilation:bool=False
+    latent_size:int=512
+    linear_hidden_layer:int=512
+    n_features:int=30
     
     @nn.compact
-    def __call__(self, x, z_rng):
+    def __call__(self, x):
         x = jnp.expand_dims(x, axis=-1)
         
         # 0 
@@ -89,12 +93,20 @@ class Encoder(nn.Module):
         x = x.reshape(x.shape[0], -1) 
         
         
-        mean_x = nn.Dense(512, name='fc3_mean')(x)
-        logvar_x = nn.Dense(512, name='fc3_logvar')(x)  # (128, 12, 469, 20)
+        # mean_x = nn.Dense(512, name='fc3_mean')(x)
+        # logvar_x = nn.Dense(512, name='fc3_logvar')(x)  # (128, 12, 469, 20)
         
-        z = reparameterize(z_rng, mean_x, logvar_x)
+        # z = reparameterize(z_rng, mean_x, logvar_x)
         
-        return z, mean_x, logvar_x
+        z = nn.Dense(self.latent_size, name='latent_vector')(x)
+        
+        if self.linear:
+            z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)    
+            z = jax.nn.leaky_relu(z)
+            z = nn.Dense(self.n_features, name='linear_classification')(z)
+        
+        
+        return z 
     
     
 class Decoder(nn.Module):
@@ -143,7 +155,7 @@ class Decoder(nn.Module):
         
         
         x = nn.ConvTranspose(1, kernel_size=(3,3), strides=[1,1])(x)
-
+        x = jnp.squeeze(x, axis=-1)
         return x
         
 
@@ -151,18 +163,23 @@ class Decoder(nn.Module):
     
     
 class Conv2d_VAE(nn.Module):
-    
     dilation:bool=False
+    latent_size:int=512
+    linear_hidden_layer:int=512
+    n_features:int=30
     
     def setup(self):
-        self.encoder = Encoder(dilation=self.dilation)
+        self.encoder = Encoder(dilation=self.dilation, 
+                               linear=False, 
+                               latent_size=self.latent_size,
+                               n_features=self.n_features)
         self.decoder = Decoder(dilation=self.dilation)
 
-    def __call__(self, x, z_rng):
+    def __call__(self, x):
      
-        z, mean, logvar = self.encoder(x, z_rng)
+        z = self.encoder(x)
         recon_x = self.decoder(z)
-        return recon_x, mean, logvar
+        return recon_x
 
 if __name__=='__main__':
     

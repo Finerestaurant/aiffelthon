@@ -99,9 +99,9 @@ class linear_evaluation(nn.Module):
     
     @nn.compact
     def __call__(self, x):
-        x = nn.Dense(512)(x)
+        x = nn.Dense(512, name= 'linear_hidden_layer')(x)
         x = jax.nn.leaky_relu(x)
-        x = nn.Dense(self.n_features)(x)
+        x = nn.Dense(self.n_features, name='linear_classification')(x)
         
         return x
             

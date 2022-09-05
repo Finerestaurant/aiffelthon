@@ -7,40 +7,29 @@ from torch.utils.data import DataLoader, random_split
 
 # --- import model ---
 from model.supervised_model import *
-from model.Conv1d_model import Conv1d_VAE
-from model.Conv1d_model import Encoder as Encoder1d
-
-from model.Conv2d_model import Conv2d_VAE
-from model.Conv2d_model import Encoder as Encoder2d
 
 # --- import framework ---
 import flax 
 import flax.linen as nn
 from flax.training import train_state
+from flax.core.frozen_dict import unfreeze, freeze
 import jax
 import numpy as np
 import jax.numpy as jnp
 import optax
 
 import cloudpickle
-import argparse
 from tqdm import tqdm
 import os
 import wandb
 import matplotlib.pyplot as plt
+from utils.config_hook import yaml_config_hook
 
 
-# --- define argparser ---
-parser = argparse.ArgumentParser()
-parser.add_argument('--batch_size', type = int, default=16, help='batch_size')
-parser.add_argument('--learning_rate', type = float, default=0.0001, help='learning_rate')
-parser.add_argument('--epoch', type = int, default=5, help='Epoch')
-parser.add_argument('--model_type', type = str, default=None, help='model_type')
-parser.add_argument('--dilation', type = bool, default=False, help='dilation')
-parser.add_argument('--linear_evaluation', type=bool, default=False, help='Linear_evaluation')
-parser.add_argument('--num_workers', type=int, default=0, help='num_workers')
 
-args = parser.parse_args()
+# --- Define config['---']
+config_dir = os.path.join(os.path.expanduser('~'),'module/config')     
+config = yaml_config_hook(os.path.join(config_dir, 'config.yaml'))
 
 
 
@@ -55,14 +44,6 @@ def collate_batch(batch):
 
 # --- define init state ---
 def init_state(model, x_shape, key, lr) -> train_state.TrainState:
-    params = model.init({'params': key}, jnp.ones(x_shape), key)
-    optimizer = optax.adam(learning_rate=lr)
-    return train_state.TrainState.create(
-        apply_fn=model.apply,
-        tx=optimizer,
-        params=params)
-
-def linear_init_state(model, x_shape, key, lr) -> train_state.TrainState:
     params = model.init({'params': key}, jnp.ones(x_shape))
     optimizer = optax.adam(learning_rate=lr)
     return train_state.TrainState.create(
@@ -74,14 +55,13 @@ def linear_init_state(model, x_shape, key, lr) -> train_state.TrainState:
 
 # --- define train_step ---
 @jax.jit
-def train_step(state, x, z_rng):    
-    
+def train_step(state, x):        
     def loss_fn(params):
-        recon_x, mean, logvar = model.apply(params, x, z_rng)
-        kld_loss = kl_divergence(mean, logvar).mean()
+        recon_x = model.apply(params, x)
+        # kld_loss = kl_divergence(mean, logvar).mean()
         mse_loss = ((recon_x - x)**2).mean()
-        loss = mse_loss + kld_loss
-        return loss
+        # loss = mse_loss + kld_loss
+        return mse_loss
     
     grad_fn = jax.value_and_grad(loss_fn)
     loss, grads = grad_fn(state.params)
@@ -89,13 +69,13 @@ def train_step(state, x, z_rng):
     return state.apply_gradients(grads=grads), loss
 
 @jax.jit
-def linear_train_step(encoder, 
-                      enc_state, 
+def linear_freeze_train_step(enc_state, 
                       enc_batch, 
                       linear_state, 
                       x, y):    
     
-    latent = encoder.apply({'params':enc_state, 'batch_stats':enc_batch}, x)
+    latent = Encoder(dilation=config['dilation'],
+                    linear=False).apply({'params':enc_state, 'batch_stats':enc_batch}, x)
     
     def loss_fn(params):
         logits = linear_evaluation().apply(params, latent)
@@ -104,45 +84,82 @@ def linear_train_step(encoder,
     
     grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
     (loss, logits), grads = grad_fn(linear_state.params)
-    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(labels, -1))
+    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(y, -1))
     
-    return state.apply_gradients(grads=grads), loss
+    return linear_state.apply_gradients(grads=grads), loss, accuracy
+
+
+@jax.jit
+def linear_unfreeze_train_step(state, x, y):    
+      
+    def loss_fn(params):
+        logits = Encoder(dilation=config['dilation'],
+                    linear=True).apply(params, x)        
+        loss = jnp.mean(optax.softmax_cross_entropy(logits, y))
+        return loss, logits
+    
+    grad_fn = jax.value_and_grad(loss_fn, has_aux=True)
+    (loss, logits), grads = grad_fn(state.params)
+    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(y, -1))
+    
+    return state.apply_gradients(grads=grads), loss, accuracy
 
 
 
 # --- define eval step ---
 @jax.jit
-def eval_step(state, x, z_rng):
+def eval_step(state, x):
     
-    recon_x, mean, logvar = model.apply(state.params, x, z_rng)
-    kld_loss = kl_divergence(mean, logvar).mean()
+    recon_x = model.apply(state.params, x)
     mse_loss = ((recon_x - x)**2).mean()
-    loss = mse_loss + kld_loss
     
-    return recon_x, loss, mse_loss, kld_loss
+    return recon_x, mse_loss
 
 @jax.jit
-def linear_eval_step(state, x, y):
+def linear_freeze_eval_step(enc_state, 
+                      enc_batch, 
+                      linear_state, 
+                      x, y):
     
-    logits = linear_evaluation().apply(state.params, x)
+    latent = Encoder(dilation=config['dilation'],
+                    linear=False).apply({'params':enc_state, 'batch_stats':enc_batch}, x)
+    
+    logits = linear_evaluation().apply(linear_state.params, latent)
     loss = jnp.mean(optax.softmax_cross_entropy(logits, y))
-    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(labels, -1))
+    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(y, -1))
+    
+    return loss, accuracy
+
+@jax.jit
+def linear_unfreeze_eval_step(state, 
+                      x, y):
+    
+    logits = Encoder(dilation=config['dilation'],
+                    linear=True).apply(state, x)
+    loss = jnp.mean(optax.softmax_cross_entropy(logits, y))
+    accuracy = jnp.mean(jnp.argmax(logits, -1) == jnp.argmax(y, -1))
     
     return loss, accuracy
 
 
 
 if __name__ == "__main__":
-    batch_size = args.batch_size
-    lr = args.learning_rate
-    dilation = args.dilation
+    batch_size = config['batch_size']
+    lr = config['learning_rate']
+    dilation = config['dilation']
     
-    if args.model_type == 'Conv1d':
-        model = Conv1d_VAE(dilation=args.dilation)
-        encoder = Encoder1d()
-    elif args.model_type == 'Conv2d':
-        model = Conv2d_VAE(dilation=args.dilation)
-        encoder = Encoder2d()
+    if config['model_type'] == 'Conv1d':
+        
+        from model.Conv1d_model import Conv1d_VAE, Encoder        
+        model = Conv1d_VAE(dilation=config['dilation'],
+                          latent_size=config['latent_size'])
+        
+    elif config['model_type'] == 'Conv2d':
+        
+        from model.Conv2d_model import Conv2d_VAE, Encoder
+        model = Conv2d_VAE(dilation=config['dilation'],
+                          latent_size=config['latent_size'])
+        
     else: 
         raise Exception('Input Correct model type. Conv1d, Conv2d.')
     
@@ -150,7 +167,7 @@ if __name__ == "__main__":
     
     
     # ---Load dataset---
-    dataset_dir = os.path.join(os.path.expanduser('~'),'dataset')            
+    dataset_dir = os.path.join(os.path.expanduser('~'),config['dataset_dir'])            
 
     print("Loading dataset...")    
     data = mel_dataset(dataset_dir)
@@ -166,14 +183,14 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_batch)
     test_dataloader = DataLoader(test_dataset, batch_size=int(batch_size/4), shuffle=True, num_workers=0, collate_fn=collate_batch)
     
-    print(f'batch_size = {args.batch_size}')
-    print(f'learning rate = {args.learning_rate}')
-    print(f'train_size = {train_size}')
-    print(f'test_size = {test_size}')
+    print(f"batch_size = {config['batch_size']}")
+    print(f"learning rate = {config['learning_rate']}")
+    print(f"train_size = {train_size}")
+    print(f"test_size = {test_size}")
     
     
     print('Data load complete!\n')
-    print(nn.tabulate(model, rngs={'params': rng})(next(iter(train_dataloader))[0], rng))
+    print(nn.tabulate(model, rngs={'params': rng})(next(iter(train_dataloader))[0]))
     
     
     
@@ -190,11 +207,10 @@ if __name__ == "__main__":
     
     # ---train model---
     wandb.init(
-    project=args.model_type,
-    entity='aiffelthon',
-    config = args
+    project=config['model_type'],
+    entity='aiffelthon'
     )
-    for i in range(args.epoch):
+    for i in range(config['pretrain_epoch']):
         train_data = iter(train_dataloader)
         test_data = iter(test_dataloader)
         
@@ -204,20 +220,20 @@ if __name__ == "__main__":
         print(f'\nEpoch {i+1}')
         
         for j in range(len(train_dataloader)):
-            rng, key = jax.random.split(rng)
+            # rng, key = jax.random.split(rng)
             x, y = next(train_data)
             test_x, test_y = next(test_data)
             
-            x = (x + 100) 
-            test_x = (test_x + 100)
+            x = (x / 200) + 0.5 
+            test_x = (test_x / 200) + 0.5
             
-            state, train_loss = train_step(state, x, rng)           
-            recon_x, test_loss, mse_loss, kld_loss = eval_step(state, test_x, rng)
-            wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss, 'mse_loss':mse_loss,'kld_loss':kld_loss})
+            state, train_loss = train_step(state, x)           
+            recon_x, test_loss = eval_step(state, test_x)
+            wandb.log({'train_loss' : train_loss, 'test_loss' : test_loss})
             train_loss_mean += train_loss
             test_loss_mean += test_loss
             
-            if j % 1000 == 0:
+            if j % 100 == 0:
                 
                 recon_x = recon_x.reshape(recon_x.shape[0], x.shape[1], x.shape[2])       
                 
@@ -248,14 +264,69 @@ if __name__ == "__main__":
     print('Pre train complete!\n\n\n')
     
     
+    
+    
     # --- linear evaluation, if true. ---
-    if args.linear_evaluation:
+    if config['linear_evaluation']:
         print('Linear evalutaion step.')
+              
+        if config['freeze_encoder']:
+            enc_state = state.params['params']['encoder']
+            enc_batch = state.params['batch_stats']['encoder']
+            linear_state = init_state(linear_evaluation(), (config['batch_size'], config['latent_size']), rng, config['learning_rate'])
         
-        enc_state = state['params']['encoder']
-        enc_batch = state['batch_stats']['encoder']
+        
+        # --- changing parameters ---
+        else:
+            linear_init = linear_evaluation().init(key, jnp.ones((config['batch_size'], config['latent_size'])))        
+            enc_unfreeze_variable = unfreeze(state.params)
+            enc_unfreeze_variable['params']['linear_hidden_layer'] = linear_init['params']['linear_hidden_layer']
+            enc_unfreeze_variable['params']['linear_classification'] = linear_init['params']['linear_classification']
+            params = freeze(enc_unfreeze_variable)
+            optimizer = optax.adam(learning_rate=lr)
+            state = train_state.TrainState.create(
+                    apply_fn=Encoder(dilation=config['dilation'], linear=True).apply,
+                    tx=optimizer,
+                    params=params)
+                                           
         
         
-        
+        for i in range(config['linear_evaluation_epoch']):
+            
+            train_data = iter(train_dataloader)
+            test_data = iter(test_dataloader)
+            
+            
+            linear_train_loss = 0
+            linear_test_loss = 0
+            
+            linear_train_accuarcy = 0
+            linear_test_accuarcy = 0
+            
+            for j in range(len(train_dataloader)):
+                
+                x, y = next(train_data)
+                test_x, test_y = next(test_data)
+
+                x = (x / 200)  + 0.5
+                test_x = (test_x / 200) + 0.5
+                if config['freeze_encoder']:
+                    linear_state, train_loss, train_accuarcy = linear_freeze_train_step(enc_state, enc_batch, linear_state, x, y)
+                    test_loss, test_accuarcy = linear_freeze_eval_step(enc_state, enc_batch, linear_state, test_x, test_y)
+                
+                else:
+                    state, trian_loss, train_accuarcy = linear_unfreeze_train_step(state, x, y)
+                    test_loss, test_accuarcy = linear_unfreeze_eval_step(state, test_x, test_y)
+                    
+
+                wandb.log({'linear_train_loss' : train_loss, 'linear_test_loss' : test_loss, 'linear_train_accuarcy':train_accuarcy,'linear_test_accuarcy':test_accuarcy})
+                linear_train_loss += train_loss
+                linear_test_loss += test_loss
+
+                linear_train_accuarcy += train_accuarcy
+                linear_test_accuarcy += test_accuarcy
+
+                print(f'step : {j}/{len(train_dataloader)}, train_loss : {round(train_loss, 2)}, train_accuarcy : {round(train_accuarcy, 2)}, test_loss : {round(test_loss, 2)}, test_accuarcy : {round(test_accuarcy, 2)}', end='\r')
+        print(f'epoch {i+1} - average loss - train : {round(linear_train_loss/len(train_dataloader), 3)}, test : {round(linear_test_loss/len(test_dataloader), 3)}, average accuarcy - train : {round(linear_train_accuarcy/len(train_dataloader), 3)}, test : {round(linear_test_accuarcy/len(train_dataloader)), 3}')
                       
 wandb.finish()

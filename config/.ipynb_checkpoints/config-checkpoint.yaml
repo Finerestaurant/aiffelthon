@@ -1,0 +1,19 @@
+# We recommend batch size 16 ~ 32, if memory can handle parameters.
+batch_size: 16
+learning_rate: 0.0001
+dataset_dir: dev_dataset
+
+# Conv2d or Conv1d
+model_type: Conv2d 
+
+dilation: True
+pretrain_epoch: 1
+latent_size: 512
+
+linear_evaluation: True
+linear_evaluation_epoch: 20
+linear_hidden_layer: 512
+
+freeze_encoder: False
+
+

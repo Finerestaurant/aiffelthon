@@ -13,9 +13,14 @@ def reparameterize(rng, mean, logvar):
 
 class Encoder(nn.Module):
     
+    linear:bool=False
     dilation:bool=False
+    latent_size:int=512
+    linear_hidden_layer:int=512
+    n_features:int=30
+    
     @nn.compact
-    def __call__(self, x, rng):
+    def __call__(self, x):
         if self.dilation:
             x = nn.Conv(512,kernel_size=(3,), strides=1, padding='same', kernel_dilation=1)(x)
         else:
@@ -64,13 +69,15 @@ class Encoder(nn.Module):
         x = nn.max_pool(x, window_shape=(2,), strides=(2,))
         x = nn.normalization.BatchNorm(True)(x)
 
+        z = nn.Dense(512, name='latent_vector')
+                
+        if self.linear:
+            z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)    
+            z = jax.nn.leaky_relu(z)
+            z = nn.Dense(self.n_features, name='linear_classification')(z)
         
-        mean_x = nn.Dense(20, name='fc3_mean')(x) 
-        logvar_x = nn.Dense(20, name='fc3_logvar')(x)
         
-        z = reparameterize(rng, mean_x, logvar_x)
-        
-        return z, mean_x, logvar_x
+        return z
     
 class Decoder(nn.Module):
 
@@ -119,24 +126,34 @@ class Decoder(nn.Module):
         else:
             x = nn.ConvTranspose(self.recon_shape, kernel_size=(3,), strides=[2,])(x)
         
+
+        
+        
+        
         return x
         
 
 
     
 class Conv1d_VAE(nn.Module):
-    
     dilation:bool=False
+    latent_size:int=512
+    linear_hidden_layer:int=512
+    n_features:int=30
+    
     def setup(self):
-        self.encoder = Encoder(dilation=self.dilation)
+        self.encoder = Encoder(dilation=self.dilation, 
+                               linear=False, 
+                               latent_size=self.latent_size,
+                               n_features=self.n_features)
+        
         self.decoder = Decoder(dilation=self.dilation)
 
     def __call__(self, x, z_rng):
      
-        x = x.reshape(x.shape[0],x.shape[1],x.shape[2])   
-        z, mean, logvar = self.encoder(x, z_rng) 
+        z = self.encoder(x) 
         recon_x = self.decoder(z)
-        return recon_x, mean, logvar
+        return recon_x
     
 if __name__=='__main__':
     
