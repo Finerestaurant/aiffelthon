@@ -1,0 +1,421 @@
+
+Epoch 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+step : 2399/4670, train_loss : 0.0020000000949949026, test_loss : 0.0010000000474974513
+Traceback (most recent call last):
+  File "main.py", line 253, in <module>
+    wandb.log({'reconstruction' : [
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 289, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1591, in log
+    self._log(data=data, step=step, commit=commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1375, in _log
+    self._partial_history_callback(data, step, commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1259, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/interface/interface.py", line 541, in publish_partial_history
+    data = history_dict_to_json(run, data, step=user_step, ignore_copy_err=True)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/utils.py", line 54, in history_dict_to_json
+    payload[key] = val_to_json(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/utils.py", line 99, in val_to_json
+    item.bind_to_run(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/image.py", line 338, in bind_to_run
+    not _server_accepts_artifact_path()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/image.py", line 45, in _server_accepts_artifact_path
+    max_cli_version = util._get_max_cli_version() if not util._is_offline() else None
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 1756, in _is_offline
+    wandb.run is not None and wandb.run.settings._offline
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 720, in settings
+    cp = self._settings.copy()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_settings.py", line 1143, in copy
+    return self.__copy__()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_settings.py", line 1113, in __copy__
+    new = Settings()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_settings.py", line 1019, in __init__
+    elif isinstance(validator, Sequence):
+  File "/usr/lib/python3.8/typing.py", line 769, in __instancecheck__
+    return self.__subclasscheck__(type(obj))
+  File "/usr/lib/python3.8/typing.py", line 774, in __subclasscheck__
+    return issubclass(cls, self.__origin__)
+  File "/usr/lib/python3.8/abc.py", line 102, in __subclasscheck__
+    return _abc_subclasscheck(cls, subclass)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "main.py", line 253, in <module>
+    wandb.log({'reconstruction' : [
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 289, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1591, in log
+    self._log(data=data, step=step, commit=commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1375, in _log
+    self._partial_history_callback(data, step, commit)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 1259, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/interface/interface.py", line 541, in publish_partial_history
+    data = history_dict_to_json(run, data, step=user_step, ignore_copy_err=True)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/utils.py", line 54, in history_dict_to_json
+    payload[key] = val_to_json(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/utils.py", line 99, in val_to_json
+    item.bind_to_run(
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/image.py", line 338, in bind_to_run
+    not _server_accepts_artifact_path()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/data_types/image.py", line 45, in _server_accepts_artifact_path
+    max_cli_version = util._get_max_cli_version() if not util._is_offline() else None
+  File "/usr/local/lib/python3.8/dist-packages/wandb/util.py", line 1756, in _is_offline
+    wandb.run is not None and wandb.run.settings._offline
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 255, in wrapper
+    return func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_run.py", line 720, in settings
+    cp = self._settings.copy()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_settings.py", line 1143, in copy
+    return self.__copy__()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_settings.py", line 1113, in __copy__
+    new = Settings()
+  File "/usr/local/lib/python3.8/dist-packages/wandb/sdk/wandb_settings.py", line 1019, in __init__
+    elif isinstance(validator, Sequence):
+  File "/usr/lib/python3.8/typing.py", line 769, in __instancecheck__
+    return self.__subclasscheck__(type(obj))
+  File "/usr/lib/python3.8/typing.py", line 774, in __subclasscheck__
+    return issubclass(cls, self.__origin__)
+  File "/usr/lib/python3.8/abc.py", line 102, in __subclasscheck__
+    return _abc_subclasscheck(cls, subclass)
+KeyboardInterrupt

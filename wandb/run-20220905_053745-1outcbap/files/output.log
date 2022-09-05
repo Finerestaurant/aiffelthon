@@ -1,0 +1,216 @@
+
+Epoch 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 1 - average loss - train : 0.01100000087171793, test : 0.011000000871717930326
+Pre train complete!
+Linear evalutaion step.
+Traceback (most recent call last):
+  File "main.py", line 333, in <module>
+    state, trian_loss, train_accuarcy = linear_unfreeze_train_step(state, x, y)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 527, in cache_miss
+    out_flat = xla.xla_call(
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 1937, in bind
+    return call_bind(self, fun, *args, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 1953, in call_bind
+    outs = top_trace.process_call(primitive, fun_, tracers, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 687, in process_call
+    return primitive.impl(f, *tracers, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 208, in _xla_call_impl
+    compiled_fun = xla_callable(fun, device, backend, name, donated_invars,
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 295, in memoized_fun
+    ans = call(fun, *args)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 257, in _xla_callable_uncached
+    return lower_xla_callable(fun, device, backend, name, donated_invars, False,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 302, in lower_xla_callable
+    jaxpr, out_type, consts = pe.trace_to_jaxpr_final2(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2188, in trace_to_jaxpr_final2
+    jaxpr, out_type, consts = trace_to_subjaxpr_dynamic2(fun, main, debug_info)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2138, in trace_to_subjaxpr_dynamic2
+    ans = fun.call_wrapped(*in_tracers_)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "main.py", line 102, in linear_unfreeze_train_step
+    (loss, logits), grads = grad_fn(state.params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 1073, in value_and_grad_f
+    ans, vjp_py, aux = _vjp(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 2521, in _vjp
+    out_primal, out_vjp, aux = ad.vjp(
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/ad.py", line 135, in vjp
+    out_primals, pvals, jaxpr, consts, aux = linearize(traceable, *primals, has_aux=True)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/ad.py", line 122, in linearize
+    jaxpr, out_pvals, consts = pe.trace_to_jaxpr_nounits(jvpfun_flat, in_pvals)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 802, in trace_to_jaxpr_nounits
+    jaxpr, (out_pvals, consts, env) = fun.call_wrapped(pvals)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "main.py", line 96, in loss_fn
+    logits = Encoder(dilation=config['dilation'],
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1183, in apply
+    return apply(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1586, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model/Conv2d_model.py", line 104, in __call__
+    z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)
+  File "<string>", line 12, in __init__
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 774, in __post_init__
+    raise errors.NameInUseError('submodule', self.name, parent_class)
+jax._src.traceback_util.UnfilteredStackTrace: flax.errors.NameInUseError: Could not create submodule "linear_hidden_layer" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "main.py", line 333, in <module>
+    state, trian_loss, train_accuarcy = linear_unfreeze_train_step(state, x, y)
+  File "main.py", line 102, in linear_unfreeze_train_step
+    (loss, logits), grads = grad_fn(state.params)
+  File "main.py", line 96, in loss_fn
+    logits = Encoder(dilation=config['dilation'],
+  File "/home/anthonypark6904/module/model/Conv2d_model.py", line 104, in __call__
+    z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)
+  File "<string>", line 12, in __init__
+flax.errors.NameInUseError: Could not create submodule "linear_hidden_layer" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)
+Traceback (most recent call last):
+  File "main.py", line 333, in <module>
+    state, trian_loss, train_accuarcy = linear_unfreeze_train_step(state, x, y)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 527, in cache_miss
+    out_flat = xla.xla_call(
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 1937, in bind
+    return call_bind(self, fun, *args, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 1953, in call_bind
+    outs = top_trace.process_call(primitive, fun_, tracers, params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/core.py", line 687, in process_call
+    return primitive.impl(f, *tracers, **params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 208, in _xla_call_impl
+    compiled_fun = xla_callable(fun, device, backend, name, donated_invars,
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 295, in memoized_fun
+    ans = call(fun, *args)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 257, in _xla_callable_uncached
+    return lower_xla_callable(fun, device, backend, name, donated_invars, False,
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/dispatch.py", line 302, in lower_xla_callable
+    jaxpr, out_type, consts = pe.trace_to_jaxpr_final2(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2188, in trace_to_jaxpr_final2
+    jaxpr, out_type, consts = trace_to_subjaxpr_dynamic2(fun, main, debug_info)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 2138, in trace_to_subjaxpr_dynamic2
+    ans = fun.call_wrapped(*in_tracers_)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "main.py", line 102, in linear_unfreeze_train_step
+    (loss, logits), grads = grad_fn(state.params)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 1073, in value_and_grad_f
+    ans, vjp_py, aux = _vjp(
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/api.py", line 2521, in _vjp
+    out_primal, out_vjp, aux = ad.vjp(
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/ad.py", line 135, in vjp
+    out_primals, pvals, jaxpr, consts, aux = linearize(traceable, *primals, has_aux=True)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/ad.py", line 122, in linearize
+    jaxpr, out_pvals, consts = pe.trace_to_jaxpr_nounits(jvpfun_flat, in_pvals)
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/profiler.py", line 294, in wrapper
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/jax/interpreters/partial_eval.py", line 802, in trace_to_jaxpr_nounits
+    jaxpr, (out_pvals, consts, env) = fun.call_wrapped(pvals)
+  File "/usr/local/lib/python3.8/dist-packages/jax/linear_util.py", line 168, in call_wrapped
+    ans = self.f(*args, **dict(self.params, **kwargs))
+  File "main.py", line 96, in loss_fn
+    logits = Encoder(dilation=config['dilation'],
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/traceback_util.py", line 162, in reraise_with_filtered_traceback
+    return fun(*args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1183, in apply
+    return apply(
+  File "/usr/local/lib/python3.8/dist-packages/flax/core/scope.py", line 865, in wrapper
+    y = fn(root, *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 1586, in scope_fn
+    return fn(module.clone(parent=scope), *args, **kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 361, in wrapped_module_method
+    return self._call_wrapped_method(fun, args, kwargs)
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 657, in _call_wrapped_method
+    y = fun(self, *args, **kwargs)
+  File "/home/anthonypark6904/module/model/Conv2d_model.py", line 104, in __call__
+    z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)
+  File "<string>", line 12, in __init__
+  File "/usr/local/lib/python3.8/dist-packages/flax/linen/module.py", line 774, in __post_init__
+    raise errors.NameInUseError('submodule', self.name, parent_class)
+jax._src.traceback_util.UnfilteredStackTrace: flax.errors.NameInUseError: Could not create submodule "linear_hidden_layer" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)
+The stack trace below excludes JAX-internal frames.
+The preceding is the original exception that occurred, unmodified.
+--------------------
+The above exception was the direct cause of the following exception:
+Traceback (most recent call last):
+  File "main.py", line 333, in <module>
+    state, trian_loss, train_accuarcy = linear_unfreeze_train_step(state, x, y)
+  File "main.py", line 102, in linear_unfreeze_train_step
+    (loss, logits), grads = grad_fn(state.params)
+  File "main.py", line 96, in loss_fn
+    logits = Encoder(dilation=config['dilation'],
+  File "/home/anthonypark6904/module/model/Conv2d_model.py", line 104, in __call__
+    z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)
+  File "<string>", line 12, in __init__
+flax.errors.NameInUseError: Could not create submodule "linear_hidden_layer" in Module Encoder: Name in use. (https://flax.readthedocs.io/en/latest/api_reference/flax.errors.html#flax.errors.NameInUseError)

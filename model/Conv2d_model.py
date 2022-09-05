@@ -17,7 +17,7 @@ class Encoder(nn.Module):
     linear:bool=False
     dilation:bool=False
     latent_size:int=512
-    linear_hidden_layer:int=512
+    hidden_layer:int=512
     n_features:int=30
     
     @nn.compact
@@ -101,7 +101,7 @@ class Encoder(nn.Module):
         z = nn.Dense(self.latent_size, name='latent_vector')(x)
         
         if self.linear:
-            z = nn.Dense(self.linear_hidden_layer, name='linear_hidden_layer')(z)    
+            z = nn.Dense(self.hidden_layer, name='linear_hidden_layer')(z)    
             z = jax.nn.leaky_relu(z)
             z = nn.Dense(self.n_features, name='linear_classification')(z)
         
@@ -165,7 +165,6 @@ class Decoder(nn.Module):
 class Conv2d_VAE(nn.Module):
     dilation:bool=False
     latent_size:int=512
-    linear_hidden_layer:int=512
     n_features:int=30
     
     def setup(self):

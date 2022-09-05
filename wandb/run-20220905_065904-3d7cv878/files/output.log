@@ -1,0 +1,16 @@
+
+Epoch 1
+
+step : 7/305, train_loss : 0.11500000208616257, test_loss : 0.10800000280141833
+Traceback (most recent call last):
+  File "main.py", line 233, in <module>
+    train_loss_mean += train_loss
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/numpy/lax_numpy.py", line 4639, in deferring_binary_op
+    return binary_op(*args)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "main.py", line 233, in <module>
+    train_loss_mean += train_loss
+  File "/usr/local/lib/python3.8/dist-packages/jax/_src/numpy/lax_numpy.py", line 4639, in deferring_binary_op
+    return binary_op(*args)
+KeyboardInterrupt

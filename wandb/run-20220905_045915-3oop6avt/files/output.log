@@ -1,0 +1,56 @@
+
+Epoch 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+epoch 1 - average loss - train : 0.01100000087171793, test : 0.0110000008717179380526
+Pre train complete!
+Linear evalutaion step.
+Traceback (most recent call last):
+  File "main.py", line 281, in <module>
+    linear_init = linear_evaluation().init(key, jnp.ones((config['batch_size'], config['latent_size'])))
+NameError: name 'key' is not defined
+Traceback (most recent call last):
+  File "main.py", line 281, in <module>
+    linear_init = linear_evaluation().init(key, jnp.ones((config['batch_size'], config['latent_size'])))
+NameError: name 'key' is not defined

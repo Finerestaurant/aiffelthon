@@ -12,8 +12,6 @@ latent_size: 512
 
 linear_evaluation: True
 linear_evaluation_epoch: 20
-linear_hidden_layer: 512
-
+hidden_layer: 512
 freeze_encoder: False
-
 

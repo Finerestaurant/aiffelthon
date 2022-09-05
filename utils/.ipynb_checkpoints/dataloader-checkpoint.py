@@ -43,6 +43,7 @@ class mel_dataset(Dataset):
                     with open(i, 'rb') as handle:
                         b = pickle.load(handle)
                     if b.shape[1] != 1876:
+                        del b
                         pass
                     else: 
                         try:
@@ -50,7 +51,7 @@ class mel_dataset(Dataset):
                             result_dict[i] = song_dict[song_id]
                         except:
                             print(song_id,'passed.')
-                            
+                        del b
         file_list = []
         label = []
 
